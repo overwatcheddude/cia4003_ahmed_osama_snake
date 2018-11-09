@@ -17,14 +17,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 class SnakeEngine extends SurfaceView implements Runnable
 {
+    private DatabaseReference myDatabase; //Used to add data to firebase.
+
     Thread myThread = null; //A thread for looping the game.
 
-    //The snake has 4 moving directions: Up, right down and left.
-    public enum Moving {UP, RIGHT, DOWN, LEFT}
-
+    public enum Moving {UP, RIGHT, DOWN, LEFT} //The snake has 4 moving directions: Up, right down and left.
     Moving movement = Moving.UP; // The snake starts moving up at the beginning of the game.
 
     //Used to get the size of the screen.
@@ -123,6 +126,14 @@ class SnakeEngine extends SurfaceView implements Runnable
         snakeLength = 1; //The snake length starts at 1.
         snakeXs[0] = NUM_BLOCKS_WIDE / 2;
         snakeYs[0] = numBlocksHigh / 2;
+
+        //If the score is not zero, then add the score to firebase.
+        if (score != 0)
+        {
+            myDatabase = FirebaseDatabase.getInstance().getReference();
+            myDatabase.setValue("Guest"); //TODO: The name changes depends on the login.
+            myDatabase.child("Guest").child("Score").setValue(score);
+        }
 
         spawnApple(); //Spawns the first apple.
         score = 0; //Resets the score.
