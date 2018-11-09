@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,8 +17,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 
-class SnakeEngine extends SurfaceView implements Runnable {
-
+class SnakeEngine extends SurfaceView implements Runnable
+{
     // Our game thread for the main game loop
     private Thread thread = null;
 
@@ -31,6 +32,7 @@ class SnakeEngine extends SurfaceView implements Runnable {
 
     // For tracking movement Heading
     public enum Heading {UP, RIGHT, DOWN, LEFT}
+
     // Start by heading to the right
     private Heading heading = Heading.RIGHT;
 
@@ -80,7 +82,8 @@ class SnakeEngine extends SurfaceView implements Runnable {
     // Some paint for our canvas
     private Paint paint;
 
-    public SnakeEngine(Context context, Point size) {
+    public SnakeEngine(Context context, Point size)
+    {
         super(context);
 
         context = context;
@@ -95,7 +98,8 @@ class SnakeEngine extends SurfaceView implements Runnable {
 
         // Set the sound up
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        try {
+        try
+        {
             // Create objects of the 2 required classes
             // Use m_Context because this is a reference to the Activity
             AssetManager assetManager = context.getAssets();
@@ -108,8 +112,9 @@ class SnakeEngine extends SurfaceView implements Runnable {
             descriptor = assetManager.openFd("death_sound.ogg");
             snake_crash = soundPool.load(descriptor, 0);
 
-        } catch (IOException e) {
-            // Error
+        } catch (Exception e)
+        {
+            Log.i("", e.getMessage());
         }
 
 
@@ -126,34 +131,40 @@ class SnakeEngine extends SurfaceView implements Runnable {
     }
 
     @Override
-    public void run() {
-
-        while (isPlaying) {
-
+    public void run()
+    {
+        while (isPlaying)
+        {
             // Update 10 times a second
-            if(updateRequired()) {
+            if(updateRequired())
+            {
                 update();
                 draw();
             }
-
         }
     }
-    public void pause() {
+
+    public void pause()
+    {
         isPlaying = false;
-        try {
+        try
+        {
             thread.join();
-        } catch (InterruptedException e) {
-            // Error
+        } catch (Exception e)
+        {
+            Log.d("", e.getMessage());
         }
     }
 
-    public void resume() {
+    public void resume()
+    {
         isPlaying = true;
         thread = new Thread(this);
         thread.start();
     }
 
-    public void newGame() {
+    public void newGame()
+    {
         // Start with a single snake segment
         snakeLength = 1;
         snakeXs[0] = NUM_BLOCKS_WIDE / 2;
@@ -169,13 +180,15 @@ class SnakeEngine extends SurfaceView implements Runnable {
         nextFrameTime = System.currentTimeMillis();
     }
 
-    public void spawnBob() {
+    public void spawnBob()
+    {
         Random random = new Random();
         bobX = random.nextInt(NUM_BLOCKS_WIDE - 1) + 1;
         bobY = random.nextInt(numBlocksHigh - 1) + 1;
     }
 
-    private void eatBob(){
+    private void eatBob()
+    {
         //  Got him!
         // Increase the size of the snake
         snakeLength++;
@@ -187,9 +200,11 @@ class SnakeEngine extends SurfaceView implements Runnable {
         soundPool.play(eat_bob, 1, 1, 0, 0, 1);
     }
 
-    private void moveSnake(){
+    private void moveSnake()
+    {
         // Move the body
-        for (int i = snakeLength; i > 0; i--) {
+        for (int i = snakeLength; i > 0; i--)
+        {
             // Start at the back and move it
             // to the position of the segment in front of it
             snakeXs[i] = snakeXs[i - 1];
@@ -200,7 +215,8 @@ class SnakeEngine extends SurfaceView implements Runnable {
         }
 
         // Move the head in the appropriate heading
-        switch (heading) {
+        switch (heading)
+        {
             case UP:
                 snakeYs[0]--;
                 break;
@@ -219,19 +235,34 @@ class SnakeEngine extends SurfaceView implements Runnable {
         }
     }
 
-    private boolean detectDeath(){
+    private boolean detectDeath()
+    {
         // Has the snake died?
         boolean dead = false;
 
         // Hit the screen edge
-        if (snakeXs[0] == -1) dead = true;
-        if (snakeXs[0] >= NUM_BLOCKS_WIDE) dead = true;
-        if (snakeYs[0] == -1) dead = true;
-        if (snakeYs[0] == numBlocksHigh) dead = true;
+        if (snakeXs[0] == -1)
+        {
+            dead = true;
+        }
+        if (snakeXs[0] >= NUM_BLOCKS_WIDE)
+        {
+            dead = true;
+        }
+        if (snakeYs[0] == -1)
+        {
+            dead = true;
+        }
+        if (snakeYs[0] == numBlocksHigh)
+        {
+            dead = true;
+        }
 
         // Eaten itself?
-        for (int i = snakeLength - 1; i > 0; i--) {
-            if ((i > 4) && (snakeXs[0] == snakeXs[i]) && (snakeYs[0] == snakeYs[i])) {
+        for (int i = snakeLength - 1; i > 0; i--)
+        {
+            if ((i > 4) && (snakeXs[0] == snakeXs[i]) && (snakeYs[0] == snakeYs[i]))
+            {
                 dead = true;
             }
         }
@@ -239,15 +270,18 @@ class SnakeEngine extends SurfaceView implements Runnable {
         return dead;
     }
 
-    public void update() {
+    public void update()
+    {
         // Did the head of the snake eat Bob?
-        if (snakeXs[0] == bobX && snakeYs[0] == bobY) {
+        if (snakeXs[0] == bobX && snakeYs[0] == bobY)
+        {
             eatBob();
         }
 
         moveSnake();
 
-        if (detectDeath()) {
+        if (detectDeath())
+        {
             //start again
             soundPool.play(snake_crash, 1, 1, 0, 0, 1);
 
@@ -255,9 +289,11 @@ class SnakeEngine extends SurfaceView implements Runnable {
         }
     }
 
-    public void draw() {
+    public void draw()
+    {
         // Get a lock on the canvas
-        if (surfaceHolder.getSurface().isValid()) {
+        if (surfaceHolder.getSurface().isValid())
+        {
             canvas = surfaceHolder.lockCanvas();
 
             // Fill the screen with Game Code School blue
@@ -268,10 +304,11 @@ class SnakeEngine extends SurfaceView implements Runnable {
 
             // Scale the HUD text
             paint.setTextSize(90);
-            canvas.drawText("Score:" + score, 10, 70, paint);
+            canvas.drawText("Score: " + score, 10, 70, paint);
 
             // Draw the snake one block at a time
-            for (int i = 0; i < snakeLength; i++) {
+            for (int i = 0; i < snakeLength; i++)
+            {
                 canvas.drawRect(snakeXs[i] * blockSize,
                         (snakeYs[i] * blockSize),
                         (snakeXs[i] * blockSize) + blockSize,
@@ -294,12 +331,12 @@ class SnakeEngine extends SurfaceView implements Runnable {
         }
     }
 
-    public boolean updateRequired() {
-
+    public boolean updateRequired()
+    {
         // Are we due to update the frame
-        if(nextFrameTime <= System.currentTimeMillis()){
+        if(nextFrameTime <= System.currentTimeMillis())
+        {
             // Tenth of a second has passed
-
             // Setup when the next update will be triggered
             nextFrameTime =System.currentTimeMillis() + MILLIS_PER_SECOND / FPS;
 
@@ -307,17 +344,19 @@ class SnakeEngine extends SurfaceView implements Runnable {
             // functions are executed
             return true;
         }
-
         return false;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
-
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+    public boolean onTouchEvent(MotionEvent motionEvent)
+    {
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK)
+        {
             case MotionEvent.ACTION_UP:
-                if (motionEvent.getX() >= screenX / 2) {
-                    switch(heading){
+                if (motionEvent.getX() >= screenX / 2)
+                {
+                    switch(heading)
+                    {
                         case UP:
                             heading = Heading.RIGHT;
                             break;
@@ -328,25 +367,25 @@ class SnakeEngine extends SurfaceView implements Runnable {
                             heading = Heading.LEFT;
                             break;
                         case LEFT:
-                            heading = Heading.UP;
-                            break;
-                    }
-                } else {
-                    switch(heading){
-                        case UP:
-                            heading = Heading.LEFT;
-                            break;
-                        case LEFT:
-                            heading = Heading.DOWN;
-                            break;
-                        case DOWN:
-                            heading = Heading.RIGHT;
-                            break;
-                        case RIGHT:
                             heading = Heading.UP;
                             break;
                     }
                 }
+                else
+                    {
+                    switch(heading)
+                    {
+                        case UP:
+                            heading = Heading.LEFT; break;
+                        case LEFT:
+                            heading = Heading.DOWN; break;
+                        case DOWN:
+                            heading = Heading.RIGHT; break;
+                        case RIGHT:
+                            heading = Heading.UP; break;
+                        default: Log.d("", "Unknown snake heading movement.");
+                    }
+                    }
         }
         return true;
     }
