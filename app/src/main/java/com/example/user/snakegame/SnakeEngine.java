@@ -138,17 +138,6 @@ class SnakeEngine extends SurfaceView implements Runnable
         appleY = random.nextInt(numBlocksHigh - 1) + 1;
     }
 
-    private void eatApple()
-    {
-        snakeLength++; //Increases the length of the snake.
-        score++; //Increases the score.
-        spawnApple(); //Spawn another apple.
-
-        //Play apple eating sound
-        eatApple.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        eatApple.start();
-    }
-
     private void moveSnake()
     {
         // Move the body
@@ -217,7 +206,13 @@ class SnakeEngine extends SurfaceView implements Runnable
         //If the snake XY position is the same as the apple XY position, then apple is eaten.
         if (snakeXs[0] == appleX && snakeYs[0] == appleY)
         {
-            eatApple();
+            snakeLength++; //Increases the length of the snake.
+            score++; //Increases the score.
+            spawnApple(); //Spawn another apple.
+
+            //Play apple eating sound
+            eatApple.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            eatApple.start();
         }
 
         moveSnake(); //The snake movement is updated.
@@ -229,7 +224,7 @@ class SnakeEngine extends SurfaceView implements Runnable
             snakeDeath.setAudioStreamType(AudioManager.STREAM_MUSIC);
             snakeDeath.start();
 
-            newGame();
+            newGame(); //Restarts the game
         }
     }
 
