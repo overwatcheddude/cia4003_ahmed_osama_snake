@@ -19,19 +19,19 @@ import android.graphics.Paint;
 
 class SnakeEngine extends SurfaceView implements Runnable
 {
-    // Our game thread for the main game loop
-    Thread thread = null;
+    //A thread for looping the game.
+    Thread myThread = null;
 
-    // for playing sound effects
+    //Plays sound effects.
     SoundPool soundPool;
     int eat_bob = -1;
     int snake_crash = -1;
 
-    // For tracking movement Heading
-    public enum Heading {UP, RIGHT, DOWN, LEFT}
+    //The snake has 4 moving directions: Up, right down and left.
+    public enum Moving {UP, RIGHT, DOWN, LEFT}
 
-    // Start by heading to the right
-    Heading heading = Heading.RIGHT;
+    // The snake starts moving up at the beginning of the game.
+    Moving movement = Moving.UP;
 
     // To hold the screen size in pixels
     int screenX;
@@ -40,9 +40,9 @@ class SnakeEngine extends SurfaceView implements Runnable
     // How long is the snake
     int snakeLength;
 
-    // Where is Bob hiding?
-    int bobX;
-    int bobY;
+    //XY coordinates of the apple.
+    int appleX;
+    int appleY;
 
     // The size in pixels of a snake segment
     int blockSize;
@@ -144,7 +144,7 @@ class SnakeEngine extends SurfaceView implements Runnable
         isPlaying = false;
         try
         {
-            thread.join();
+            myThread.join();
         } catch (Exception e)
         {
             Log.d("", e.getMessage());
@@ -154,8 +154,8 @@ class SnakeEngine extends SurfaceView implements Runnable
     public void resume()
     {
         isPlaying = true;
-        thread = new Thread(this);
-        thread.start();
+        myThread = new Thread(this);
+        myThread.start();
     }
 
     public void newGame()
@@ -178,8 +178,8 @@ class SnakeEngine extends SurfaceView implements Runnable
     public void spawnBob()
     {
         Random random = new Random();
-        bobX = random.nextInt(NUM_BLOCKS_WIDE - 1) + 1;
-        bobY = random.nextInt(numBlocksHigh - 1) + 1;
+        appleX = random.nextInt(NUM_BLOCKS_WIDE - 1) + 1;
+        appleY = random.nextInt(numBlocksHigh - 1) + 1;
     }
 
     private void eatBob()
@@ -210,7 +210,7 @@ class SnakeEngine extends SurfaceView implements Runnable
         }
 
         // Move the head in the appropriate heading
-        switch (heading)
+        switch (movement)
         {
             case UP:
                 snakeYs[0]--;
@@ -268,7 +268,7 @@ class SnakeEngine extends SurfaceView implements Runnable
     public void update()
     {
         // Did the head of the snake eat Bob?
-        if (snakeXs[0] == bobX && snakeYs[0] == bobY)
+        if (snakeXs[0] == appleX && snakeYs[0] == appleY)
         {
             eatBob();
         }
@@ -315,10 +315,10 @@ class SnakeEngine extends SurfaceView implements Runnable
             paint.setColor(Color.argb(255, 255, 0, 0));
 
             // Draw Bob
-            canvas.drawRect(bobX * blockSize,
-                    (bobY * blockSize),
-                    (bobX * blockSize) + blockSize,
-                    (bobY * blockSize) + blockSize,
+            canvas.drawRect(appleX * blockSize,
+                    (appleY * blockSize),
+                    (appleX * blockSize) + blockSize,
+                    (appleY * blockSize) + blockSize,
                     paint);
 
             // Unlock the canvas and reveal the graphics for this frame
@@ -350,31 +350,31 @@ class SnakeEngine extends SurfaceView implements Runnable
             case MotionEvent.ACTION_UP:
                 if (motionEvent.getX() >= screenX / 2)
                 {
-                    switch(heading)
+                    switch(movement)
                     {
                         case UP:
-                            heading = Heading.RIGHT; break;
+                            movement = Moving.RIGHT; break;
                         case RIGHT:
-                            heading = Heading.DOWN; break;
+                            movement = Moving.DOWN; break;
                         case DOWN:
-                            heading = Heading.LEFT; break;
+                            movement = Moving.LEFT; break;
                         case LEFT:
-                            heading = Heading.UP; break;
+                            movement = Moving.UP; break;
                         default: Log.d("", "Unknown snake heading movement.");
                     }
                 }
                 else
                     {
-                    switch(heading)
+                    switch(movement)
                     {
                         case UP:
-                            heading = Heading.LEFT; break;
+                            movement = Moving.LEFT; break;
                         case LEFT:
-                            heading = Heading.DOWN; break;
+                            movement = Moving.DOWN; break;
                         case DOWN:
-                            heading = Heading.RIGHT; break;
+                            movement = Moving.RIGHT; break;
                         case RIGHT:
-                            heading = Heading.UP; break;
+                            movement = Moving.UP; break;
                         default: Log.d("", "Unknown snake heading movement.");
                     }
                     }
