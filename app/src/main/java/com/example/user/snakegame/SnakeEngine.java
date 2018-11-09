@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,11 +21,6 @@ import android.graphics.Paint;
 class SnakeEngine extends SurfaceView implements Runnable
 {
     Thread myThread = null; //A thread for looping the game.
-
-    //Plays sound effects.
-    SoundPool soundPool;
-    int eat_bob = -1;
-    int snake_crash = -1;
 
     //The snake has 4 moving directions: Up, right down and left.
     public enum Moving {UP, RIGHT, DOWN, LEFT}
@@ -63,6 +59,10 @@ class SnakeEngine extends SurfaceView implements Runnable
     SurfaceHolder surfaceHolder; //Part of the canvas.
     Paint paint; //Paint for the canvas.
 
+    //Sound effects
+    MediaPlayer eatApple = MediaPlayer.create(getContext(), R.raw.eat_bob);
+    MediaPlayer snakeDeath = MediaPlayer.create(getContext(), R.raw.snake_crash);
+
     public SnakeEngine(Context context, Point size)
     {
         super(context);
@@ -74,28 +74,6 @@ class SnakeEngine extends SurfaceView implements Runnable
         blockSize = screenX / NUM_BLOCKS_WIDE;
         // How many blocks of the same size will fit into the height
         numBlocksHigh = screenY / blockSize;
-
-        // Set the sound up
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        try
-        {
-            // Create objects of the 2 required classes
-            // Use m_Context because this is a reference to the Activity
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor descriptor;
-
-            // Prepare the two sounds in memory
-            descriptor = assetManager.openFd("get_mouse_sound.ogg");
-            eat_bob = soundPool.load(descriptor, 0);
-
-            descriptor = assetManager.openFd("death_sound.ogg");
-            snake_crash = soundPool.load(descriptor, 0);
-
-        } catch (Exception e)
-        {
-            Log.i("", e.getMessage());
-        }
-
 
         // Initialize the drawing objects
         surfaceHolder = getHolder();
@@ -165,7 +143,10 @@ class SnakeEngine extends SurfaceView implements Runnable
         snakeLength++; //Increases the length of the snake.
         score++; //Increases the score.
         spawnApple(); //Spawn another apple.
-        soundPool.play(eat_bob, 1, 1, 0, 0, 1);
+
+        //Play apple eating sound
+        eatApple.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        eatApple.start();
     }
 
     private void moveSnake()
@@ -244,7 +225,10 @@ class SnakeEngine extends SurfaceView implements Runnable
         //If the snake dies, then the game restarts.
         if (detectDeath())
         {
-            soundPool.play(snake_crash, 1, 1, 0, 0, 1);
+            //Plays snake dying sound.
+            snakeDeath.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            snakeDeath.start();
+
             newGame();
         }
     }
