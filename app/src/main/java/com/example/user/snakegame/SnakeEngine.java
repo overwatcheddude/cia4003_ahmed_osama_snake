@@ -24,7 +24,7 @@ class SnakeEngine extends SurfaceView implements Runnable {
     // To hold a reference to the Activity
     private Context context;
 
-    // for plaing sound effects
+    // for playing sound effects
     private SoundPool soundPool;
     private int eat_bob = -1;
     private int snake_crash = -1;

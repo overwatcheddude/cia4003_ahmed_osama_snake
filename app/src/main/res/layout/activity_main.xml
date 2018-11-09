@@ -1,18 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tvSnakeGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Snake Game"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+    <ImageView
+        android:id="@+id/imgSnake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:srcCompat="@drawable/snake"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="213dp" />
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/btnStartGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="GoToGameActivity"
+        android:text="Start Game"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="132dp" />
+
+    <Button
+        android:id="@+id/btnHighScores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="High Scores"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="132dp" />
+
+    <Button
+        android:id="@+id/btnAchievements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Achievements"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="132dp" />
+
+    <Button
+        android:id="@+id/btnStatistics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Statistics"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="132dp" />
+
+</LinearLayout>
