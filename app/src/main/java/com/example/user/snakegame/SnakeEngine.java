@@ -22,9 +22,6 @@ class SnakeEngine extends SurfaceView implements Runnable
     // Our game thread for the main game loop
     private Thread thread = null;
 
-    // To hold a reference to the Activity
-    private Context context;
-
     // for playing sound effects
     private SoundPool soundPool;
     private int eat_bob = -1;
@@ -60,7 +57,7 @@ class SnakeEngine extends SurfaceView implements Runnable
     private final long FPS = 10;
     // There are 1000 milliseconds in a second
     private final long MILLIS_PER_SECOND = 1000;
-// We will draw the frame much more often
+    // We will draw the frame much more often
 
     // How many points does the player have
     private int score;
@@ -70,7 +67,7 @@ class SnakeEngine extends SurfaceView implements Runnable
     private int[] snakeYs;
 
     // Everything we need for drawing
-// Is the game currently playing?
+    // Is the game currently playing?
     private volatile boolean isPlaying;
 
     // A canvas for our paint
@@ -85,8 +82,6 @@ class SnakeEngine extends SurfaceView implements Runnable
     public SnakeEngine(Context context, Point size)
     {
         super(context);
-
-        context = context;
 
         screenX = size.x;
         screenY = size.y;
@@ -193,10 +188,10 @@ class SnakeEngine extends SurfaceView implements Runnable
         // Increase the size of the snake
         snakeLength++;
         //replace Bob
-        // This reminds me of Edge of Tomorrow. Oneday Bob will be ready!
+        // This reminds me of Edge of Tomorrow. One day Bob will be ready!
         spawnBob();
         //add to the score
-        score = score + 1;
+        score++;
         soundPool.play(eat_bob, 1, 1, 0, 0, 1);
     }
 
@@ -358,17 +353,14 @@ class SnakeEngine extends SurfaceView implements Runnable
                     switch(heading)
                     {
                         case UP:
-                            heading = Heading.RIGHT;
-                            break;
+                            heading = Heading.RIGHT; break;
                         case RIGHT:
-                            heading = Heading.DOWN;
-                            break;
+                            heading = Heading.DOWN; break;
                         case DOWN:
-                            heading = Heading.LEFT;
-                            break;
+                            heading = Heading.LEFT; break;
                         case LEFT:
-                            heading = Heading.UP;
-                            break;
+                            heading = Heading.UP; break;
+                        default: Log.d("", "Unknown snake heading movement.");
                     }
                 }
                 else
