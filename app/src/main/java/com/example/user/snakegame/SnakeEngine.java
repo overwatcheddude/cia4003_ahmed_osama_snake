@@ -60,8 +60,8 @@ class SnakeEngine extends SurfaceView implements Runnable
     Paint paint; //Paint for the canvas.
 
     //Sound effects
-    MediaPlayer eatApple = MediaPlayer.create(getContext(), R.raw.eat_bob);
-    MediaPlayer snakeDeath = MediaPlayer.create(getContext(), R.raw.snake_crash);
+    MediaPlayer eatApple = MediaPlayer.create(getContext(), R.raw.eat_apple);
+    MediaPlayer snakeDeath = MediaPlayer.create(getContext(), R.raw.snake_dies);
 
     public SnakeEngine(Context context, Point size)
     {
