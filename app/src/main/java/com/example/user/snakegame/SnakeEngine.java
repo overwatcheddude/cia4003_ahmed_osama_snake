@@ -19,8 +19,7 @@ import android.graphics.Paint;
 
 class SnakeEngine extends SurfaceView implements Runnable
 {
-    //A thread for looping the game.
-    Thread myThread = null;
+    Thread myThread = null; //A thread for looping the game.
 
     //Plays sound effects.
     SoundPool soundPool;
@@ -30,54 +29,39 @@ class SnakeEngine extends SurfaceView implements Runnable
     //The snake has 4 moving directions: Up, right down and left.
     public enum Moving {UP, RIGHT, DOWN, LEFT}
 
-    // The snake starts moving up at the beginning of the game.
-    Moving movement = Moving.UP;
+    Moving movement = Moving.UP; // The snake starts moving up at the beginning of the game.
 
-    // To hold the screen size in pixels
+    //Used to get the size of the screen.
     int screenX;
     int screenY;
 
-    // How long is the snake
-    int snakeLength;
+    int snakeLength; //The length of the snake becomes longer after eating apples.
 
     //XY coordinates of the apple.
     int appleX;
     int appleY;
 
-    // The size in pixels of a snake segment
-    int blockSize;
+    int blockSize; //The size of every block that makes up the snake.
 
     // The size in segments of the playable area
     final int NUM_BLOCKS_WIDE = 40;
     int numBlocksHigh;
 
-    // Control pausing between updates
-    long nextFrameTime;
-    // Update the game 10 times per second
-    final long FPS = 10;
-    // There are 1000 milliseconds in a second
-    final long MILLIS_PER_SECOND = 1000;
-    // We will draw the frame much more often
+    long nextFrameTime; //The pause between updates.
+    final long FPS = 10; //Updates the game 10 times every second.
+    final long MILLIS_PER_SECOND = 1000; //Represents 1 second.
 
-    // How many points does the player have
-    int score;
+    int score; //Used to hold the score of the player.
 
     // The location in the grid of all the segments
     int[] snakeXs;
     int[] snakeYs;
 
-    // Everything we need for drawing
-    // Is the game currently playing?
-    volatile boolean isPlaying;
+    volatile boolean isPlaying; //Is the game paused or resumed?
 
-    // A canvas for our paint
-    Canvas canvas;
-
-    // Required to use canvas
-    SurfaceHolder surfaceHolder;
-
-    // Some paint for our canvas
-    Paint paint;
+    Canvas canvas; //Canvas for the paint.
+    SurfaceHolder surfaceHolder; //Part of the canvas.
+    Paint paint; //Paint for the canvas.
 
     public SnakeEngine(Context context, Point size)
     {
@@ -121,17 +105,15 @@ class SnakeEngine extends SurfaceView implements Runnable
         snakeXs = new int[200];
         snakeYs = new int[200];
 
-        // Start the game
-        newGame();
+        newGame(); // (Re)Starts the game.
     }
 
     @Override
     public void run()
     {
-        while (isPlaying)
+        while (isPlaying) //While the game is resumed.
         {
-            // Update 10 times a second
-            if(updateRequired())
+            if(updateRequired()) //Update the game.
             {
                 update();
                 draw();
@@ -160,38 +142,29 @@ class SnakeEngine extends SurfaceView implements Runnable
 
     public void newGame()
     {
-        // Start with a single snake segment
-        snakeLength = 1;
+        snakeLength = 1; //The snake length starts at 1.
         snakeXs[0] = NUM_BLOCKS_WIDE / 2;
         snakeYs[0] = numBlocksHigh / 2;
 
-        // Get Bob ready for dinner
-        spawnBob();
-
-        // Reset the score
-        score = 0;
+        spawnApple(); //Spawns the first apple.
+        score = 0; //Resets the score.
 
         // Setup nextFrameTime so an update is triggered
         nextFrameTime = System.currentTimeMillis();
     }
 
-    public void spawnBob()
+    public void spawnApple()
     {
         Random random = new Random();
         appleX = random.nextInt(NUM_BLOCKS_WIDE - 1) + 1;
         appleY = random.nextInt(numBlocksHigh - 1) + 1;
     }
 
-    private void eatBob()
+    private void eatApple()
     {
-        //  Got him!
-        // Increase the size of the snake
-        snakeLength++;
-        //replace Bob
-        // This reminds me of Edge of Tomorrow. One day Bob will be ready!
-        spawnBob();
-        //add to the score
-        score++;
+        snakeLength++; //Increases the length of the snake.
+        score++; //Increases the score.
+        spawnApple(); //Spawn another apple.
         soundPool.play(eat_bob, 1, 1, 0, 0, 1);
     }
 
@@ -213,29 +186,23 @@ class SnakeEngine extends SurfaceView implements Runnable
         switch (movement)
         {
             case UP:
-                snakeYs[0]--;
-                break;
-
+                snakeYs[0]--; break;
             case RIGHT:
-                snakeXs[0]++;
-                break;
-
+                snakeXs[0]++; break;
             case DOWN:
-                snakeYs[0]++;
-                break;
-
+                snakeYs[0]++; break;
             case LEFT:
-                snakeXs[0]--;
-                break;
+                snakeXs[0]--; break;
+            default: Log.d("", "Unknown snake movement.");
         }
     }
 
+    //This method checks whether the snake died or not.
     private boolean detectDeath()
     {
-        // Has the snake died?
-        boolean dead = false;
+        boolean dead = false; //False means the the snake is still alive.
 
-        // Hit the screen edge
+        //If the snake hits the borders of the screen, the snake dies.
         if (snakeXs[0] == -1)
         {
             dead = true;
@@ -261,25 +228,23 @@ class SnakeEngine extends SurfaceView implements Runnable
                 dead = true;
             }
         }
-
         return dead;
     }
 
     public void update()
     {
-        // Did the head of the snake eat Bob?
+        //If the snake XY position is the same as the apple XY position, then apple is eaten.
         if (snakeXs[0] == appleX && snakeYs[0] == appleY)
         {
-            eatBob();
+            eatApple();
         }
 
-        moveSnake();
+        moveSnake(); //The snake movement is updated.
 
+        //If the snake dies, then the game restarts.
         if (detectDeath())
         {
-            //start again
             soundPool.play(snake_crash, 1, 1, 0, 0, 1);
-
             newGame();
         }
     }
@@ -314,7 +279,7 @@ class SnakeEngine extends SurfaceView implements Runnable
             // Set the color of the paint to draw Bob red
             paint.setColor(Color.argb(255, 255, 0, 0));
 
-            // Draw Bob
+            //Draws the apple in the canvas.
             canvas.drawRect(appleX * blockSize,
                     (appleY * blockSize),
                     (appleX * blockSize) + blockSize,
@@ -335,8 +300,7 @@ class SnakeEngine extends SurfaceView implements Runnable
             // Setup when the next update will be triggered
             nextFrameTime =System.currentTimeMillis() + MILLIS_PER_SECOND / FPS;
 
-            // Return true so that the update and draw
-            // functions are executed
+            // Return true so that the update and draw functions are executed
             return true;
         }
         return false;
