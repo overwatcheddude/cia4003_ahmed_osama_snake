@@ -28,7 +28,7 @@
         android:id="@+id/btnStartGame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="GoToGameActivity"
+        android:onClick="OnActivityClick"
         android:text="Start Game"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="132dp" />
@@ -37,6 +37,7 @@
         android:id="@+id/btnHighScores"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="OnActivityClick"
         android:text="High Scores"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="132dp" />
@@ -45,6 +46,7 @@
         android:id="@+id/btnAchievements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="OnActivityClick"
         android:text="Achievements"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="132dp" />
@@ -53,6 +55,7 @@
         android:id="@+id/btnStatistics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="OnActivityClick"
         android:text="Statistics"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="132dp" />

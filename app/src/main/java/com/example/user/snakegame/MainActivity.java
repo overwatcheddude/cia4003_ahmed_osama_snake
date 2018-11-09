@@ -11,16 +11,25 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity
 {
+    General gen = new General();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Get the context of this activity
+        gen.SetContext(getApplicationContext());
     }
 
-    public void GoToGameActivity(View v)
+    public void OnActivityClick(View v)
     {
-        Intent i = new Intent(this, GameActivity.class);
-        startActivity(i);
+        switch (v.getId())
+        {
+            case R.id.btnStartGame:
+                gen.GoToActivity(GameActivity.class); break;
+            default: gen.DisplayMessage("Unknown button clicked.");
+        }
     }
 }
