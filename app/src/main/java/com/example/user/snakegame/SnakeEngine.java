@@ -20,64 +20,64 @@ import android.graphics.Paint;
 class SnakeEngine extends SurfaceView implements Runnable
 {
     // Our game thread for the main game loop
-    private Thread thread = null;
+    Thread thread = null;
 
     // for playing sound effects
-    private SoundPool soundPool;
-    private int eat_bob = -1;
-    private int snake_crash = -1;
+    SoundPool soundPool;
+    int eat_bob = -1;
+    int snake_crash = -1;
 
     // For tracking movement Heading
     public enum Heading {UP, RIGHT, DOWN, LEFT}
 
     // Start by heading to the right
-    private Heading heading = Heading.RIGHT;
+    Heading heading = Heading.RIGHT;
 
     // To hold the screen size in pixels
-    private int screenX;
-    private int screenY;
+    int screenX;
+    int screenY;
 
     // How long is the snake
-    private int snakeLength;
+    int snakeLength;
 
     // Where is Bob hiding?
-    private int bobX;
-    private int bobY;
+    int bobX;
+    int bobY;
 
     // The size in pixels of a snake segment
-    private int blockSize;
+    int blockSize;
 
     // The size in segments of the playable area
-    private final int NUM_BLOCKS_WIDE = 40;
-    private int numBlocksHigh;
+    final int NUM_BLOCKS_WIDE = 40;
+    int numBlocksHigh;
 
     // Control pausing between updates
-    private long nextFrameTime;
+    long nextFrameTime;
     // Update the game 10 times per second
-    private final long FPS = 10;
+    final long FPS = 10;
     // There are 1000 milliseconds in a second
-    private final long MILLIS_PER_SECOND = 1000;
+    final long MILLIS_PER_SECOND = 1000;
     // We will draw the frame much more often
 
     // How many points does the player have
-    private int score;
+    int score;
 
     // The location in the grid of all the segments
-    private int[] snakeXs;
-    private int[] snakeYs;
+    int[] snakeXs;
+    int[] snakeYs;
 
     // Everything we need for drawing
     // Is the game currently playing?
-    private volatile boolean isPlaying;
+    volatile boolean isPlaying;
 
     // A canvas for our paint
-    private Canvas canvas;
+    Canvas canvas;
 
     // Required to use canvas
-    private SurfaceHolder surfaceHolder;
+    SurfaceHolder surfaceHolder;
 
     // Some paint for our canvas
-    private Paint paint;
+    Paint paint;
 
     public SnakeEngine(Context context, Point size)
     {
