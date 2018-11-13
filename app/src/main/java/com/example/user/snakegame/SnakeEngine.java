@@ -11,19 +11,29 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Random;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 class SnakeEngine extends SurfaceView implements Runnable
 {
-    private DatabaseReference myDatabase; //Used to add data to firebase.
+    //For debugging
+    private void myLog(String msg)
+    {
+        Log.i("", msg);
+    }
+
+    private DatabaseReference databaseReference; //Used to add data to firebase.
 
     Thread myThread = null; //A thread for looping the game.
 
@@ -50,7 +60,11 @@ class SnakeEngine extends SurfaceView implements Runnable
     final long FPS = 10; //Updates the game 10 times every second.
     final long MILLIS_PER_SECOND = 1000; //Represents 1 second.
 
+    //Get the user's name/email.
+    String name = "Guest";
+
     int score; //Used to hold the score of the player.
+    int highScore;
 
     // The location in the grid of all the segments
     int[] snakeXs;
@@ -121,18 +135,75 @@ class SnakeEngine extends SurfaceView implements Runnable
         myThread.start();
     }
 
+    private void getFromDB()
+    {
+        //Sets the path to get to the score node.
+        String path = "/" + name + "/Score";
+
+        //Read the player's score from Firebase.
+        final DatabaseReference NameScoreRef = FirebaseDatabase.getInstance().getReference(path);
+
+        NameScoreRef.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                //If the score exists, then get it from Firebase.
+                if (dataSnapshot.exists())
+                {
+                    highScore = dataSnapshot.getValue(Integer.class);
+                }
+                else
+                {
+                    myLog("dataSnapshot does not exist.");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error)
+            {
+                // Failed to read value
+                Log.w("", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    private void addToDB()
+    {
+        //Get root reference
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        //Read the score before adding.
+        getFromDB();
+
+        //If the user does not have a high score, then set new score.
+        if (highScore == 0)
+        {
+            databaseReference.child(name).child("Score").setValue(score);
+        }
+        //If the player score is higher than the score in the database, then add it.
+        else if (score > highScore)
+        {
+            databaseReference.child(name).child("Score").setValue(score);
+        }
+        else
+        {
+            myLog("Score is not higher than high score.");
+        }
+    }
+
     public void newGame()
     {
         snakeLength = 1; //The snake length starts at 1.
         snakeXs[0] = NUM_BLOCKS_WIDE / 2;
         snakeYs[0] = numBlocksHigh / 2;
 
+        //Read the score from the database.
+        getFromDB();
+
         //If the score is not zero, then add the score to firebase.
         if (score != 0)
         {
-            myDatabase = FirebaseDatabase.getInstance().getReference();
-            myDatabase.setValue("Guest"); //TODO: The name changes depends on the login.
-            myDatabase.child("Guest").child("Score").setValue(score);
+            addToDB();
         }
 
         spawnApple(); //Spawns the first apple.
