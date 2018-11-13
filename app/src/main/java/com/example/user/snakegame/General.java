@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.widget.Toast;
 
 public class General
-{
+{   //Context is required in order to use method like DisplayMessage and startactivity
     private Context context;
 
-    //Context is required in order to use method like DisplayMessage and startactivity
-    public void SetContext(Context con)
+    public General(Context context)
     {
-        context = con;
+        this.context = context;
     }
 
     public void DisplayMessage(String msg)

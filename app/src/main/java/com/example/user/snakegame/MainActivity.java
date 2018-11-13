@@ -11,20 +11,16 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity
 {
-    General gen = new General();
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Get the context of this activity
-        gen.SetContext(getApplicationContext());
     }
 
     public void OnActivityClick(View v)
     {
+        General gen = new General(getApplicationContext());
         switch (v.getId())
         {
             case R.id.btnStartGame:
