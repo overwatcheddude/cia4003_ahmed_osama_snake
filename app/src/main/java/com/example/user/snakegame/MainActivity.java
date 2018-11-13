@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity
         {
             case R.id.btnStartGame:
                 gen.GoToActivity(GameActivity.class); break;
+            case R.id.btnHighScores:
+                gen.GoToActivity(HighScores.class); break;
             default: gen.DisplayMessage("Unknown button clicked.");
         }
     }
