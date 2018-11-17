@@ -43,11 +43,11 @@
         tools:layout_editor_absoluteY="132dp" />
 
     <Button
-        android:id="@+id/btnAchievements"
+        android:id="@+id/btnProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="OnActivityClick"
-        android:text="Achievements"
+        android:text="Profile"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="132dp" />
 
