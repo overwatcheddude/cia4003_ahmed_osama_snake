@@ -26,4 +26,9 @@
         android:layout_height="wrap_content"
         android:onClick="BackToMenu"
         android:text="Back to Menu" />
+
+    <TextView
+        android:id="@+id/tvUploadRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
