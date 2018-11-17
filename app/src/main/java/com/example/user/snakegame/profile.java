@@ -1,14 +1,19 @@
 package com.example.user.snakegame;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -16,6 +21,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class profile extends AppCompatActivity {
@@ -39,17 +45,25 @@ public class profile extends AppCompatActivity {
 
     public void uploadImage(View v)
     {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
-        // File or Blob
-        Uri file = Uri.parse("android.resource://com.example.user.snakegame/" + R.drawable.avatar);
+        ImageView ivAvatar = findViewById(R.id.ivAvatar);
+
+        ivAvatar.setDrawingCacheEnabled(true);
+        ivAvatar.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) ivAvatar.getDrawable()).getBitmap();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
 
         // Create the file metadata
         StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/jpeg").build();
 
-        // Upload file and metadata to the path 'images/mountains.jpg'
-        UploadTask uploadTask = storageRef.child("images/"+file.getLastPathSegment()).putFile(file, metadata);
+        // Upload file and metadata to the path 'images/user_email'
+        UploadTask uploadTask = storageRef.child("images/"+ user.getEmail()).putBytes(data, metadata);
 
         // Listen for state changes, errors, and completion of the upload.
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
