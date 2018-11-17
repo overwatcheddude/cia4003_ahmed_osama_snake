@@ -127,39 +127,3 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
         return true;
     }
 }
-/*
-        switch (event.getAction() & MotionEvent.ACTION_MASK)
-        {
-            case MotionEvent.ACTION_UP:
-                if (event.getX() >= snakeEngine.screenX / 2)
-                {
-                    switch(snakeEngine.movement)
-                    {
-                        case UP:
-                            snakeEngine.movement = SnakeEngine.Moving.RIGHT; break;
-                        case RIGHT:
-                            snakeEngine.movement = SnakeEngine.Moving.DOWN; break;
-                        case DOWN:
-                            snakeEngine.movement = SnakeEngine.Moving.LEFT; break;
-                        case LEFT:
-                            snakeEngine.movement = SnakeEngine.Moving.UP; break;
-                        default: Log.d("", "Unknown snake heading movement.");
-                    }
-                }
-                else
-                {
-                    switch(snakeEngine.movement)
-                    {
-                        case UP:
-                            snakeEngine.movement = SnakeEngine.Moving.RIGHT; break;
-                        case RIGHT:
-                            snakeEngine.movement = SnakeEngine.Moving.DOWN; break;
-                        case DOWN:
-                            snakeEngine.movement = SnakeEngine.Moving.LEFT; break;
-                        case LEFT:
-                            snakeEngine.movement = SnakeEngine.Moving.UP; break;
-                        default: Log.d("", "Unknown snake heading movement.");
-                    }
-                }
-        }
- */
