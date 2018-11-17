@@ -38,10 +38,10 @@ class SnakeEngine extends SurfaceView implements Runnable
     Thread myThread = null; //A thread for looping the game.
 
     public enum Moving {UP, RIGHT, DOWN, LEFT} //The snake has 4 moving directions: Up, right down and left.
-    Moving movement = Moving.UP; // The snake starts moving up at the beginning of the game.
+    public Moving movement = Moving.UP; // The snake starts moving up at the beginning of the game.
 
     //Used to get the size of the screen.
-    int screenX;
+    public int screenX;
     int screenY;
 
     int snakeLength; //The length of the snake becomes longer after eating apples.
@@ -365,45 +365,5 @@ class SnakeEngine extends SurfaceView implements Runnable
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent)
-    {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK)
-        {
-            case MotionEvent.ACTION_UP:
-                if (motionEvent.getX() >= screenX / 2)
-                {
-                    switch(movement)
-                    {
-                        case UP:
-                            movement = Moving.RIGHT; break;
-                        case RIGHT:
-                            movement = Moving.DOWN; break;
-                        case DOWN:
-                            movement = Moving.LEFT; break;
-                        case LEFT:
-                            movement = Moving.UP; break;
-                        default: Log.d("", "Unknown snake heading movement.");
-                    }
-                }
-                else
-                    {
-                    switch(movement)
-                    {
-                        case UP:
-                            movement = Moving.LEFT; break;
-                        case LEFT:
-                            movement = Moving.DOWN; break;
-                        case DOWN:
-                            movement = Moving.RIGHT; break;
-                        case RIGHT:
-                            movement = Moving.UP; break;
-                        default: Log.d("", "Unknown snake heading movement.");
-                    }
-                    }
-        }
-        return true;
     }
 }
