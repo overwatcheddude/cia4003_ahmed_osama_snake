@@ -37,7 +37,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-public class profile extends AppCompatActivity {
+public class profile extends AppCompatActivity
+{
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private General general;
     private TextView tvUploadRate;
@@ -48,10 +49,12 @@ public class profile extends AppCompatActivity {
     StorageReference storageRef = storage.getReference();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //Gets view data.
         tvUploadRate = findViewById(R.id.tvUploadRate);
         general = new General(getApplicationContext());
         ivAvatar = findViewById(R.id.ivAvatar);
@@ -73,7 +76,7 @@ public class profile extends AppCompatActivity {
 
         // Download directly from StorageReference using Glide
         Glide.with(this)
-                .applyDefaultRequestOptions(options)
+                .applyDefaultRequestOptions(options) //Applies the above RequestOptions.
                 .load(pathRef)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -89,7 +92,6 @@ public class profile extends AppCompatActivity {
                     }
                 })
                 .into(ivAvatar);
-        Log.i("", "Glide called!");
     }
 
     public void BackToMenu(View v)
