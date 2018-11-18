@@ -41,7 +41,7 @@ public class profile extends AppCompatActivity
 {
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private General general;
-    private TextView tvUploadRate;
+    private TextView tvStatus;
     private ImageView ivAvatar;
     private String setOption;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -55,7 +55,7 @@ public class profile extends AppCompatActivity
         setContentView(R.layout.activity_profile);
 
         //Gets view data.
-        tvUploadRate = findViewById(R.id.tvUploadRate);
+        tvStatus = findViewById(R.id.tvStatus);
         general = new General(getApplicationContext());
         ivAvatar = findViewById(R.id.ivAvatar);
 
@@ -121,24 +121,24 @@ public class profile extends AppCompatActivity
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                tvUploadRate.setText("Upload is " + progress + "% done");
+                tvStatus.setText("Upload is " + progress + "% done");
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                tvUploadRate.setText("Image upload paused.");
+                tvStatus.setText("Image upload paused.");
                 general.DisplayMessage("The upload process has been paused.");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                tvUploadRate.setText("Image upload failed.");
+                tvStatus.setText("Image upload failed.");
                 general.DisplayMessage("Failed to upload image.");
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                tvUploadRate.setText("Image uploaded!");
+                tvStatus.setText("Image uploaded!");
                 general.DisplayMessage("Image uploaded successfully!");
             }
         });
