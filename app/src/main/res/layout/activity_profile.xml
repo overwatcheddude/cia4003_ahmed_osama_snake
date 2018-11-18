@@ -7,11 +7,16 @@
     android:orientation="vertical"
     tools:context=".profile">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ImageView
         android:id="@+id/ivAvatar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:srcCompat="@drawable/snake" />
+        android:layout_height="200dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
