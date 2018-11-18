@@ -53,7 +53,7 @@
         android:text="Back to Menu" />
 
     <TextView
-        android:id="@+id/tvUploadRate"
+        android:id="@+id/tvStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"/>
