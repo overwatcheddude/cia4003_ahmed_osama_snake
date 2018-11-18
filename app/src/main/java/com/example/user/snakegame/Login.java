@@ -1,9 +1,11 @@
 package com.example.user.snakegame;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.view.View;
@@ -22,6 +24,8 @@ public class Login extends AppCompatActivity
     private String password;
     private EditText etEmail;
     private EditText etPassword;
+    private CheckBox cbRememberMe;
+    private SharedPreferences sp;
 
     private boolean isValidationSuccessful()
     {
@@ -54,12 +58,53 @@ public class Login extends AppCompatActivity
         setContentView(R.layout.activity_login);
 
         general = new General(getApplicationContext());
-
         mAuth = FirebaseAuth.getInstance();
+        sp = getSharedPreferences("Login",0);
 
-        //Read edittext
+        //Read input items
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
+        cbRememberMe = findViewById(R.id.cbRememberMe);
+
+        //Get the user email and password if he checked remember me.
+        getLoginDetails();
+    }
+
+    private void getLoginDetails()
+    {
+        //If the shared preference object contains login details.
+        String email = sp.getString("email", null);
+        String password = sp.getString("password", null);
+        etEmail.setText(email);
+        etPassword.setText(password);
+        //If the email and password textboxes are empty, then remember me checkbox will be set to false.
+        if (etEmail.getText().toString().equals("") && etPassword.getText().toString().equals(""))
+        {
+            cbRememberMe.setChecked(false);
+        }
+        else
+        {
+            cbRememberMe.setChecked(true);
+        }
+    }
+
+    private void setLoginDetails()
+    {
+        //Read checkbox value, and add username and password to sharepreferences.
+        if (cbRememberMe.isChecked())
+        {
+            SharedPreferences.Editor Ed = sp.edit();
+            Ed.putString("email", etEmail.getText().toString());
+            Ed.putString("password", etPassword.getText().toString());
+            Ed.commit();
+        }
+        else
+        {
+            //Clears the sharedprefrences.
+            SharedPreferences.Editor Ed = sp.edit();
+            Ed.clear();
+            Ed.commit();
+        }
     }
 
     public void login(View v)
@@ -71,6 +116,7 @@ public class Login extends AppCompatActivity
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                setLoginDetails();
                                 general.DisplayMessage("Logged in!");
                                 general.GoToActivity(MainActivity.class);
                             } else {

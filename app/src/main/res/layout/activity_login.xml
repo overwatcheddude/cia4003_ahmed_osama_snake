@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/tvEmail"
-            android:layout_width="wrap_content"
+            android:layout_width="34dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/tvPassword"
-            android:layout_width="wrap_content"
+            android:layout_width="34dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -52,7 +52,14 @@
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword" />
+
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cbRememberMe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remember me" />
 
     <Button
         android:id="@+id/btnLogin"
