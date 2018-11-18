@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +34,9 @@ public class profile extends AppCompatActivity {
     private TextView tvUploadRate;
     private ImageView ivAvatar;
     private String setOption;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,17 @@ public class profile extends AppCompatActivity {
         tvUploadRate = findViewById(R.id.tvUploadRate);
         general = new General(getApplicationContext());
         ivAvatar = findViewById(R.id.ivAvatar);
+
+        loadImageFromDB();
+    }
+
+    private void loadImageFromDB()
+    {
+        // Reference to an image file in Cloud Storage
+        StorageReference pathRef = storageRef.child("images/" + user.getEmail());
+
+        // Download directly from StorageReference using Glide
+        Glide.with(this).load(pathRef).into(ivAvatar);
     }
 
     public void BackToMenu(View v)
@@ -52,10 +67,6 @@ public class profile extends AppCompatActivity {
 
     public void uploadImage(View v)
     {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
         ivAvatar.setDrawingCacheEnabled(true);
         ivAvatar.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) ivAvatar.getDrawable()).getBitmap();
