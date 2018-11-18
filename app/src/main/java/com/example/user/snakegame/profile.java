@@ -8,11 +8,14 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,8 +58,17 @@ public class profile extends AppCompatActivity {
         // Reference to an image file in Cloud Storage
         StorageReference pathRef = storageRef.child("images/" + user.getEmail());
 
+        // Clears the cache, so Glide has to fetch the image from Firebase on every request.
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true);
+
         // Download directly from StorageReference using Glide
-        Glide.with(this).load(pathRef).into(ivAvatar);
+        Glide.with(this)
+                .applyDefaultRequestOptions(options)
+                .load(pathRef)
+                .into(ivAvatar);
+        Log.i("", "Glide called!");
     }
 
     public void BackToMenu(View v)
