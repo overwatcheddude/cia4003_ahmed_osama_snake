@@ -51,6 +51,11 @@ public class AvatarPreview extends AppCompatActivity
 
     public void uploadImage(View v)
     {
+        if (ivAvatar.getDrawable() == null)
+        {
+            tvStatus.setText("Please set an image before uploading!");
+            return;
+        }
         ivAvatar.setDrawingCacheEnabled(true);
         ivAvatar.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) ivAvatar.getDrawable()).getBitmap();
@@ -138,6 +143,7 @@ public class AvatarPreview extends AppCompatActivity
                     }
                     ivAvatar.setImageBitmap(bitmap);
                 }
+                tvStatus.setText("Avatar set! Please upload it now.");
             }
             else if (resultCode == RESULT_CANCELED)
             {
