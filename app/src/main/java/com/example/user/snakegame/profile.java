@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -21,28 +23,23 @@ import com.google.firebase.storage.StorageReference;
 
 public class profile extends AppCompatActivity
 {
-    private ImageView ivAvatar;
-    private General gen;
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReference();
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        //Gets view data.
-        gen = new General(getApplicationContext());
-        ivAvatar = findViewById(R.id.ivAvatar);
+        //Firebase data
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
 
-        loadImageFromDB();
-    }
+        //Reads imageview.
+        final TextView tvStatus = findViewById(R.id.tvStatus);
+        ImageView ivAvatar = findViewById(R.id.ivAvatar);
 
-    private void loadImageFromDB()
-    {
         final ProgressBar progressBar = findViewById(R.id.progressBar);
+        tvStatus.setText("Loading avatar, please wait.");
 
         // Reference to an image file in Cloud Storage
         StorageReference pathRef = storageRef.child("images/" + user.getEmail());
@@ -60,12 +57,14 @@ public class profile extends AppCompatActivity
                     @Override
                     public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
+                        tvStatus.setText("Please click on SET AVATAR button to have your own avatar.");
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
+                        tvStatus.setText("Retrieved your avatar from the server!");
                         return false;
                     }
                 })
@@ -74,6 +73,7 @@ public class profile extends AppCompatActivity
 
     public void OnActivityClick(View v)
     {
+        General gen = new General(getApplicationContext());
         switch (v.getId())
         {
             case R.id.btnBackToMenu:
