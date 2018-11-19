@@ -38,7 +38,7 @@ class SnakeEngine extends SurfaceView implements Runnable
     Thread myThread = null; //A thread for looping the game.
 
     public enum Moving {UP, RIGHT, DOWN, LEFT} //The snake has 4 moving directions: Up, right down and left.
-    public Moving movement = Moving.UP; // The snake starts moving up at the beginning of the game.
+    public Moving movement = Moving.UP; //The snake will start moving up in the beginning.
 
     //Used to get the size of the screen.
     public int screenX;
@@ -52,7 +52,7 @@ class SnakeEngine extends SurfaceView implements Runnable
 
     int blockSize; //The size of every block that makes up the snake.
 
-    // The size in segments of the playable area
+    //The size in segments of the playable area
     final int NUM_BLOCKS_WIDE = 40;
     int numBlocksHigh;
 
@@ -66,7 +66,7 @@ class SnakeEngine extends SurfaceView implements Runnable
     int score; //Used to hold the score of the player.
     int highScore;
 
-    // The location in the grid of all the segments
+    //Will hold the length of the snake.
     int[] snakeXs;
     int[] snakeYs;
 
@@ -87,20 +87,19 @@ class SnakeEngine extends SurfaceView implements Runnable
         screenX = size.x;
         screenY = size.y;
 
-        // Work out how many pixels each block is
+        //Determine the block size based on the device screen dimensions.
         blockSize = screenX / NUM_BLOCKS_WIDE;
-        // How many blocks of the same size will fit into the height
         numBlocksHigh = screenY / blockSize;
 
-        // Initialize the drawing objects
+        //Initialize objects needed to draw the game.
         surfaceHolder = getHolder();
         paint = new Paint();
 
-        // If you score 200 you are rewarded with a crash achievement!
-        snakeXs = new int[200];
-        snakeYs = new int[200];
+        //The max amount of apple the user can eat is 300. Anything more will crash the game.
+        snakeXs = new int[300];
+        snakeYs = new int[300];
 
-        newGame(); // (Re)Starts the game.
+        newGame(); //(Re)Starts the game.
     }
 
     @Override
@@ -161,7 +160,7 @@ class SnakeEngine extends SurfaceView implements Runnable
             @Override
             public void onCancelled(DatabaseError error)
             {
-                // Failed to read value
+                //Failed to read value
                 Log.w("", "Failed to read value.", error.toException());
             }
         });
@@ -209,7 +208,7 @@ class SnakeEngine extends SurfaceView implements Runnable
         spawnApple(); //Spawns the first apple.
         score = 0; //Resets the score.
 
-        // Setup nextFrameTime so an update is triggered
+        //Helps determine when a frame update is needed.
         nextFrameTime = System.currentTimeMillis();
     }
 
@@ -222,19 +221,15 @@ class SnakeEngine extends SurfaceView implements Runnable
 
     private void moveSnake()
     {
-        // Move the body
+        //Moves the snake.
         for (int i = snakeLength; i > 0; i--)
         {
-            // Start at the back and move it
-            // to the position of the segment in front of it
+            //Begins at the back of the snake, and move the snake to the position of the block in-front of it.
             snakeXs[i] = snakeXs[i - 1];
             snakeYs[i] = snakeYs[i - 1];
-
-            // Exclude the head because
-            // the head has nothing in front of it
         }
 
-        // Move the head in the appropriate heading
+        //Move the snake head in the required direction.
         switch (movement)
         {
             case UP:
@@ -272,7 +267,7 @@ class SnakeEngine extends SurfaceView implements Runnable
             dead = true;
         }
 
-        // Eaten itself?
+        //Checks if the snake has eaten itself or not.
         for (int i = snakeLength - 1; i > 0; i--)
         {
             if ((i > 4) && (snakeXs[0] == snakeXs[i]) && (snakeYs[0] == snakeYs[i]))
@@ -312,22 +307,22 @@ class SnakeEngine extends SurfaceView implements Runnable
 
     public void draw()
     {
-        // Get a lock on the canvas
+        //Interacts with the canvas.
         if (surfaceHolder.getSurface().isValid())
         {
             canvas = surfaceHolder.lockCanvas();
 
-            // Fill the screen with Game Code School blue
-            canvas.drawColor(Color.argb(255, 26, 128, 182));
+            //Set the canvas (background) color to black.
+            canvas.drawColor(Color.argb(255, 0, 0, 0));
 
-            // Set the color of the paint to draw the snake white
-            paint.setColor(Color.argb(255, 255, 255, 255));
+            //Set the snake color to green.
+            paint.setColor(Color.argb(255, 0, 255, 0));
 
-            // Scale the HUD text
+            //Set the score text.
             paint.setTextSize(90);
             canvas.drawText("Score: " + score, 10, 70, paint);
 
-            // Draw the snake one block at a time
+            //Draws each block of the snake.
             for (int i = 0; i < snakeLength; i++)
             {
                 canvas.drawRect(snakeXs[i] * blockSize,
@@ -337,7 +332,7 @@ class SnakeEngine extends SurfaceView implements Runnable
                         paint);
             }
 
-            // Set the color of the paint to draw Bob red
+            //Set the apple color to red.
             paint.setColor(Color.argb(255, 255, 0, 0));
 
             //Draws the apple in the canvas.
@@ -347,21 +342,20 @@ class SnakeEngine extends SurfaceView implements Runnable
                     (appleY * blockSize) + blockSize,
                     paint);
 
-            // Unlock the canvas and reveal the graphics for this frame
+            //Posts (displays) the canvas.
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
 
     public boolean updateRequired()
     {
-        // Are we due to update the frame
+        //If the frame needs to be updated.
         if(nextFrameTime <= System.currentTimeMillis())
         {
-            // Tenth of a second has passed
-            // Setup when the next update will be triggered
-            nextFrameTime =System.currentTimeMillis() + MILLIS_PER_SECOND / FPS;
+            //1/10 of a second has been passed, setup the next update to be triggered.
+            nextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / FPS;
 
-            // Return true so that the update and draw functions are executed
+            //Update and draw methods will be executed because it was returned true.
             return true;
         }
         return false;
