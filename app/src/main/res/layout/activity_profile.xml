@@ -18,38 +18,18 @@
         android:layout_width="match_parent"
         android:layout_height="200dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnSetByGallery"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:onClick="setImage"
-            android:text="Set Avatar by Gallery" />
-
-        <Button
-            android:id="@+id/btnSetByCamera"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:onClick="setImage"
-            android:text="Set Avatar by Camera" />
-    </LinearLayout>
-
     <Button
-        android:id="@+id/btnUpload"
+        android:id="@+id/btnSetAvatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="uploadImage"
-        android:text="Upload Avatar" />
+        android:onClick="OnActivityClick"
+        android:text="Set Avatar" />
 
     <Button
         android:id="@+id/btnBackToMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="BackToMenu"
+        android:onClick="OnActivityClick"
         android:text="Back to Menu" />
 
     <TextView

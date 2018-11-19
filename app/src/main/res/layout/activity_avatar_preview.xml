@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".AvatarPreview">
+
+    <ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSetByGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="setImage"
+            android:text="Set Avatar by Gallery" />
+
+        <Button
+            android:id="@+id/btnSetByCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="setImage"
+            android:text="Set Avatar by Camera" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="uploadImage"
+        android:text="Upload Avatar" />
+
+    <Button
+        android:id="@+id/btnBackToProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="backToProfile"
+        android:text="Back to Profile" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+</LinearLayout>

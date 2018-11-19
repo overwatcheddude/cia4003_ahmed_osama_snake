@@ -20,7 +20,8 @@
         <activity android:name=".GameActivity" />
         <activity android:name=".HighScores" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".profile"></activity>
+        <activity android:name=".profile" />
+        <activity android:name=".AvatarPreview"></activity>
     </application>
 
 </manifest>
