@@ -18,6 +18,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +35,7 @@ class SnakeEngine extends SurfaceView implements Runnable
         Log.i("", msg);
     }
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference databaseReference; //Used to add data to firebase.
 
     Thread myThread = null; //A thread for looping the game.
@@ -61,7 +64,8 @@ class SnakeEngine extends SurfaceView implements Runnable
     final long MILLIS_PER_SECOND = 1000; //Represents 1 second.
 
     //Get the user's name/email.
-    String name = "Guest";
+    String uid = user.getUid();
+    String email = user.getEmail();
 
     int score; //Used to hold the score of the player.
     int highScore;
@@ -137,7 +141,7 @@ class SnakeEngine extends SurfaceView implements Runnable
     private void getFromDB()
     {
         //Sets the path to get to the score node.
-        String path = "/" + name + "/Score";
+        String path = "/" + uid + "/Score";
 
         //Read the player's score from Firebase.
         final DatabaseReference NameScoreRef = FirebaseDatabase.getInstance().getReference(path);
@@ -177,12 +181,14 @@ class SnakeEngine extends SurfaceView implements Runnable
         //If the user does not have a high score, then set new score.
         if (highScore == 0)
         {
-            databaseReference.child(name).child("Score").setValue(score);
+            databaseReference.child(uid).child("Email").setValue(email);
+            databaseReference.child(uid).child("Score").setValue(score);
         }
         //If the player score is higher than the score in the database, then add it.
         else if (score > highScore)
         {
-            databaseReference.child(name).child("Score").setValue(score);
+            databaseReference.child(uid).child("Email").setValue(email);
+            databaseReference.child(uid).child("Score").setValue(score);
         }
         else
         {
