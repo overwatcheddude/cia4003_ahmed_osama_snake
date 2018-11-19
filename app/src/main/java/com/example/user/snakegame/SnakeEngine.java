@@ -216,8 +216,8 @@ class SnakeEngine extends SurfaceView implements Runnable
     public void spawnApple()
     {
         Random random = new Random();
-        appleX = random.nextInt(NUM_BLOCKS_WIDE - 1) + 1;
-        appleY = random.nextInt(numBlocksHigh - 1) + 1;
+        appleX = random.nextInt(NUM_BLOCKS_WIDE - 10);
+        appleY = random.nextInt(numBlocksHigh - 10);
     }
 
     private void moveSnake()
