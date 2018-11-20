@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class HighScores extends AppCompatActivity
 {
@@ -58,20 +59,32 @@ public class HighScores extends AppCompatActivity
         setName(tvName1);
         setScore(tvScore1);
 
-        databaseReference.child("Leaderboard").limitToFirst(5).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Leaderboard").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Gets all scores from firebase.
                 Map<String, String> map = (Map<String, String>) dataSnapshot.getValue(); Log.i("LMAO", ("map is " + String.valueOf(map)));
                 String uidAndScoreObjects = map.toString(); Log.i("LMAO", "uidAndScoreObjects is " + uidAndScoreObjects);
                 List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(",")); Log.i("LMAO", "leaderboard is " + leaderboard);
 
-                Log.i("LMAO", "Map size is " + map.size());
+                //Create a map to store the UID and score.
+                Map<Integer, String> uidAndScoreMap = new TreeMap<>();
+
+                //Goes through all the UIDs and scores.
                 for (int i = 0; i < map.size(); i++)
                 {
                     String uidAndScore = leaderboard.get(i);
                     String uid = uidAndScore.substring(1, 29); Log.i("LMAO", "uid is " + uid);
                     String scoreField = uidAndScore.substring(29); Log.i("LMAO", "scoreField is " + scoreField);
                     String score = scoreField.replaceAll("[^\\d]", ""); Log.i("LMAO", "score is " + score);
+
+                    //Adds the UID and score and pair them together.
+                    uidAndScoreMap.put(Integer.parseInt(score), uid);
+                }
+
+                for (Map.Entry myMap  : uidAndScoreMap.entrySet())
+                {
+                    Log.i("FINAL_LMAO",myMap.getKey() + " " + myMap.getValue());
                 }
             }
 
