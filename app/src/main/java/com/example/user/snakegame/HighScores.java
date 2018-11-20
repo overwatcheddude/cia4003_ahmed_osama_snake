@@ -56,13 +56,20 @@ public class HighScores extends AppCompatActivity
         setName(tvName1);
         setScore(tvScore1);
 
-        databaseReference.child("Leaderboard").limitToFirst(1).orderByChild("Score").addValueEventListener(new ValueEventListener() {
+        filterScore(1);
+    }
+
+    private void filterScore(int index)
+    {
+        databaseReference.child("Leaderboard").limitToFirst(index).addValueEventListener(new ValueEventListener() {
             @Override
+            //H3HvyRAS2VZBjK5Xt9888hH6o5S2
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Map<String, String> map = (Map<String, String>) dataSnapshot.getValue(); Log.i("LMAO", ("map is " + String.valueOf(map)));
                 String uidAndScore = map.toString(); Log.i("LMAO", "uidAndScore is " + uidAndScore);
-                String scoreField = uidAndScore.substring(31, 38); Log.i("LMAO", "scoreField is " + scoreField);
-                String score = scoreField.replaceAll("[^\\d.]", ""); Log.i("LMAO", "score is " + score);
+                String uid = uidAndScore.substring(1, 29); Log.i("LMAO", "uid is " + uid);
+                String scoreField = uidAndScore.substring(29); Log.i("LMAO", "scoreField is " + scoreField);
+                String score = scoreField.replaceAll("[^\\d]", ""); Log.i("LMAO", "score is " + score);
             }
 
             @Override
