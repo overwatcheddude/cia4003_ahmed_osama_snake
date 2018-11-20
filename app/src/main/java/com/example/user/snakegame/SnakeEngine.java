@@ -170,6 +170,14 @@ class SnakeEngine extends SurfaceView implements Runnable
         });
     }
 
+    //This method is called twice in addToDB.
+    private void setScore()
+    {
+        databaseReference.child("Leaderboard").child(uid).child("Score").setValue(score);
+        databaseReference.child(uid).child("Email").setValue(email);
+        databaseReference.child(uid).child("Score").setValue(score);
+    }
+
     private void addToDB()
     {
         //Get root reference
@@ -181,14 +189,12 @@ class SnakeEngine extends SurfaceView implements Runnable
         //If the user does not have a high score, then set new score.
         if (highScore == 0)
         {
-            databaseReference.child(uid).child("Email").setValue(email);
-            databaseReference.child(uid).child("Score").setValue(score);
+            setScore();
         }
         //If the player score is higher than the score in the database, then add it.
         else if (score > highScore)
         {
-            databaseReference.child(uid).child("Email").setValue(email);
-            databaseReference.child(uid).child("Score").setValue(score);
+            setScore();
         }
         else
         {

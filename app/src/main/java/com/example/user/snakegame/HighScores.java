@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 public class HighScores extends AppCompatActivity
@@ -51,29 +53,27 @@ public class HighScores extends AppCompatActivity
         TextView tvName1 = findViewById(R.id.tvName1);
         TextView tvScore1 = findViewById(R.id.tvScore1);
 
-        databaseReference.orderByChild("Score").limitToFirst(5).addValueEventListener(new ValueEventListener() {
+        setName(tvName1);
+        setScore(tvScore1);
+
+        databaseReference.child("Leaderboard").limitToFirst(1).orderByChild("Score").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                Log.i("orderByMe", "Map is: " + map);
-                Log.i("orderByMe", "Your object is: " + map.get(user.getUid()));
-                //Log.i("orderByMe", "Your score is: " + )
+                Map<String, String> map = (Map<String, String>) dataSnapshot.getValue(); Log.i("LMAO", ("map is " + String.valueOf(map)));
+                String uidAndScore = map.toString(); Log.i("LMAO", "uidAndScore is " + uidAndScore);
+                String scoreField = uidAndScore.substring(31, 38); Log.i("LMAO", "scoreField is " + scoreField);
+                String score = scoreField.replaceAll("[^\\d.]", ""); Log.i("LMAO", "score is " + score);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.i("DatabaseError", String.valueOf(databaseError));
+                Log.i("databaseError", databaseError.getMessage());
             }
         });
-
-        setName(tvName1);
-        setScore(tvScore1);
     }
 
     private void setName(final TextView tvName)
     {
-        Log.i("Hey", String.valueOf(databaseReference.orderByChild("Score").limitToFirst(5)));
-
         //Sets the path to get to the score node.
         String path = "/" + user.getUid() + "/Email";
 
