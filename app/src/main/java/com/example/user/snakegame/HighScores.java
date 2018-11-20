@@ -1,6 +1,7 @@
 package com.example.user.snakegame;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Map;
+
 public class HighScores extends AppCompatActivity
 {
     //Firebase variables
@@ -48,14 +51,28 @@ public class HighScores extends AppCompatActivity
         TextView tvName1 = findViewById(R.id.tvName1);
         TextView tvScore1 = findViewById(R.id.tvScore1);
 
+        databaseReference.orderByChild("Score").limitToFirst(5).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                Log.i("orderByMe", "Map is: " + map);
+                Log.i("orderByMe", "Your object is: " + map.get(user.getUid()));
+                //Log.i("orderByMe", "Your score is: " + )
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.i("DatabaseError", String.valueOf(databaseError));
+            }
+        });
+
         setName(tvName1);
         setScore(tvScore1);
     }
 
     private void setName(final TextView tvName)
     {
-        //databaseReference.orderByChild("Score").limitToFirst(5);
-        //Log.i("Hey", String.valueOf(databaseReference.orderByChild("Score").limitToFirst(5)));
+        Log.i("Hey", String.valueOf(databaseReference.orderByChild("Score").limitToFirst(5)));
 
         //Sets the path to get to the score node.
         String path = "/" + user.getUid() + "/Email";
