@@ -28,7 +28,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HighScores extends AppCompatActivity
@@ -56,20 +58,21 @@ public class HighScores extends AppCompatActivity
         setName(tvName1);
         setScore(tvScore1);
 
-        filterScore(1);
-    }
-
-    private void filterScore(int index)
-    {
-        databaseReference.child("Leaderboard").limitToFirst(index).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Leaderboard").limitToFirst(5).addValueEventListener(new ValueEventListener() {
             @Override
-            //H3HvyRAS2VZBjK5Xt9888hH6o5S2
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Map<String, String> map = (Map<String, String>) dataSnapshot.getValue(); Log.i("LMAO", ("map is " + String.valueOf(map)));
-                String uidAndScore = map.toString(); Log.i("LMAO", "uidAndScore is " + uidAndScore);
-                String uid = uidAndScore.substring(1, 29); Log.i("LMAO", "uid is " + uid);
-                String scoreField = uidAndScore.substring(29); Log.i("LMAO", "scoreField is " + scoreField);
-                String score = scoreField.replaceAll("[^\\d]", ""); Log.i("LMAO", "score is " + score);
+                String uidAndScoreObjects = map.toString(); Log.i("LMAO", "uidAndScoreObjects is " + uidAndScoreObjects);
+                List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(",")); Log.i("LMAO", "leaderboard is " + leaderboard);
+
+                Log.i("LMAO", "Map size is " + map.size());
+                for (int i = 0; i < map.size(); i++)
+                {
+                    String uidAndScore = leaderboard.get(i);
+                    String uid = uidAndScore.substring(1, 29); Log.i("LMAO", "uid is " + uid);
+                    String scoreField = uidAndScore.substring(29); Log.i("LMAO", "scoreField is " + scoreField);
+                    String score = scoreField.replaceAll("[^\\d]", ""); Log.i("LMAO", "score is " + score);
+                }
             }
 
             @Override
