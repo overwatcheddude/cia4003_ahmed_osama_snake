@@ -45,9 +45,9 @@ public class HighScores extends AppCompatActivity
     //Variables used in multiple methods.
     String email;
     String uid;
-    Integer i = 0;
-    Integer j = 0;
-    Integer k = 0;
+    Integer i = 4;
+    Integer j = 4;
+    Integer k = 4;
 
     //View variables
     TextView[] tvScore = new TextView[5];
@@ -93,7 +93,7 @@ public class HighScores extends AppCompatActivity
                     Log.i("FINAL_LMAO",myMap.getKey() + " " + myMap.getValue());
 
                     tvScore[i].setText(String.valueOf(myMap.getKey())); Log.i("NOPE", "tvScore[i] is " + i);
-                    i++;
+                    i--;
                     uid = String.valueOf(myMap.getValue());
                     setEmail(uid);
                 }
@@ -123,7 +123,7 @@ public class HighScores extends AppCompatActivity
                 if (dataSnapshot.exists())
                 {
                     tvEmail[k].setText(dataSnapshot.getValue(String.class)); Log.i("NOPE", "tvEmail[k] is " + k);
-                    k++;
+                    k--;
                     email = dataSnapshot.getValue(String.class);
                     setAvatar(email);
                 }
@@ -152,7 +152,7 @@ public class HighScores extends AppCompatActivity
                 .applyDefaultRequestOptions(options) //Applies the above RequestOptions.
                 .load(pathRef)
                 .into(imgAvatar[j]); Log.i("NOPE", "imgAvatar[j] is " + j);
-                j++;
+                j--;
     }
 
     public void BackToMenu(View v)
