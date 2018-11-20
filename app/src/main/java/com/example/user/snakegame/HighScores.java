@@ -42,9 +42,18 @@ public class HighScores extends AppCompatActivity
     StorageReference storageRef = storage.getReference();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-    //View variables
+    //Variables used in multiple methods.
     String email;
-    ImageView imgAvatar1;
+    String uid;
+    Integer i = 0;
+    Integer j = 0;
+    Integer k = 0;
+
+    //View variables
+    TextView[] tvScore = new TextView[5];
+    TextView[] tvEmail = new TextView[5];
+    ImageView[] imgAvatar = new ImageView[5];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,12 +61,8 @@ public class HighScores extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_scores);
 
-        imgAvatar1 = findViewById(R.id.imgAvatar1);
-        TextView tvName1 = findViewById(R.id.tvName1);
-        TextView tvScore1 = findViewById(R.id.tvScore1);
-
-        setName(tvName1);
-        setScore(tvScore1);
+        //Gives the 5 view variables the resouce IDs of the input items.
+        assignResourcesToInputs();
 
         databaseReference.child("Leaderboard").addValueEventListener(new ValueEventListener() {
             @Override
@@ -84,7 +89,13 @@ public class HighScores extends AppCompatActivity
 
                 for (Map.Entry myMap  : uidAndScoreMap.entrySet())
                 {
+                    //Key is score, value is UID.
                     Log.i("FINAL_LMAO",myMap.getKey() + " " + myMap.getValue());
+
+                    tvScore[i].setText(String.valueOf(myMap.getKey())); Log.i("NOPE", "tvScore[i] is " + i);
+                    i++;
+                    uid = String.valueOf(myMap.getValue());
+                    setEmail(uid);
                 }
             }
 
@@ -95,10 +106,10 @@ public class HighScores extends AppCompatActivity
         });
     }
 
-    private void setName(final TextView tvName)
+    private void setEmail(String uid)
     {
         //Sets the path to get to the score node.
-        String path = "/" + user.getUid() + "/Email";
+        String path = "/" + uid + "/Email";
 
         //Read the player's score from Firebase.
         final DatabaseReference NameScoreRef = FirebaseDatabase.getInstance().getReference(path);
@@ -111,9 +122,10 @@ public class HighScores extends AppCompatActivity
                 //If the score exists, then get it from Firebase.
                 if (dataSnapshot.exists())
                 {
-                    tvName.setText(dataSnapshot.getValue(String.class));
+                    tvEmail[k].setText(dataSnapshot.getValue(String.class)); Log.i("NOPE", "tvEmail[k] is " + k);
+                    k++;
                     email = dataSnapshot.getValue(String.class);
-                    setAvatar(imgAvatar1, email);
+                    setAvatar(email);
                 }
             }
             @Override
@@ -125,39 +137,9 @@ public class HighScores extends AppCompatActivity
         });
     }
 
-    private void setScore(final TextView tvScore)
-    {
-        //Sets the path to get to the score node.
-        String path = "/" + user.getUid() + "/Score";
-
-        //Read the player's score from Firebase.
-        final DatabaseReference NameScoreRef = FirebaseDatabase.getInstance().getReference(path);
-
-        NameScoreRef.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                //If the score exists, then get it from Firebase.
-                if (dataSnapshot.exists())
-                {
-                    int score = dataSnapshot.getValue(Integer.class);
-                    tvScore.setText(String.valueOf(score));
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error)
-            {
-                //Failed to read value
-                Log.i("", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
-    private void setAvatar(ImageView imgAvatar, String email)
+    private void setAvatar(String email)
     {
         // Reference to an image file in Cloud Storage
-        Log.i("", "Path is: " + "images/" + email);
         StorageReference pathRef = storageRef.child("images/" + email);
 
         // Clears the cache, so Glide has to fetch the image from Firebase on every request.
@@ -169,12 +151,37 @@ public class HighScores extends AppCompatActivity
         Glide.with(this)
                 .applyDefaultRequestOptions(options) //Applies the above RequestOptions.
                 .load(pathRef)
-                .into(imgAvatar);
+                .into(imgAvatar[j]); Log.i("NOPE", "imgAvatar[j] is " + j);
+                j++;
     }
 
     public void BackToMenu(View v)
     {
         General gen = new General(getApplicationContext());
         gen.GoToActivity(MainActivity.class);
+    }
+
+    public void assignResourcesToInputs()
+    {
+        //1
+        tvEmail[0] = findViewById(R.id.tvName1);
+        tvScore[0] = findViewById(R.id.tvScore1);
+        imgAvatar[0] = findViewById(R.id.imgAvatar1);
+        //2
+        tvEmail[1] = findViewById(R.id.tvName2);
+        tvScore[1] = findViewById(R.id.tvScore2);
+        imgAvatar[1] = findViewById(R.id.imgAvatar2);
+        //3
+        tvEmail[2] = findViewById(R.id.tvName3);
+        tvScore[2] = findViewById(R.id.tvScore3);
+        imgAvatar[2] = findViewById(R.id.imgAvatar3);
+        //4
+        tvEmail[3] = findViewById(R.id.tvName4);
+        tvScore[3] = findViewById(R.id.tvScore4);
+        imgAvatar[3] = findViewById(R.id.imgAvatar4);
+        //5
+        tvEmail[4] = findViewById(R.id.tvName5);
+        tvScore[4] = findViewById(R.id.tvScore5);
+        imgAvatar[4] = findViewById(R.id.imgAvatar5);
     }
 }
