@@ -77,9 +77,9 @@ public class HighScores extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Gets all scores from firebase.
-                Map<String, String> map = (Map<String, String>) dataSnapshot.getValue(); Log.i("LMAO", ("map is " + String.valueOf(map)));
-                String uidAndScoreObjects = map.toString(); Log.i("LMAO", "uidAndScoreObjects is " + uidAndScoreObjects);
-                List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(",")); Log.i("LMAO", "leaderboard is " + leaderboard);
+                Map<String, String> map = (Map<String, String>) dataSnapshot.getValue();
+                String uidAndScoreObjects = map.toString();
+                List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(","));
 
                 //Create a map to store the UID and score.
                 Map<Integer, String> uidAndScoreMap = new TreeMap<>();
@@ -88,9 +88,9 @@ public class HighScores extends AppCompatActivity
                 for (int i = 0; i < map.size(); i++)
                 {
                     String uidAndScore = leaderboard.get(i);
-                    String uid = uidAndScore.substring(1, 29); Log.i("LMAO", "uid is " + uid);
-                    String scoreField = uidAndScore.substring(29); Log.i("LMAO", "scoreField is " + scoreField);
-                    String score = scoreField.replaceAll("[^\\d]", ""); Log.i("LMAO", "score is " + score);
+                    String uid = uidAndScore.substring(1, 29);
+                    String scoreField = uidAndScore.substring(29);
+                    String score = scoreField.replaceAll("[^\\d]", "");
 
                     //Adds the UID and score and pair them together.
                     uidAndScoreMap.put(Integer.parseInt(score), uid);
@@ -99,9 +99,7 @@ public class HighScores extends AppCompatActivity
                 for (Map.Entry myMap  : uidAndScoreMap.entrySet())
                 {
                     //Key is score, value is UID.
-                    Log.i("FINAL_LMAO",myMap.getKey() + " " + myMap.getValue());
-
-                    tvScore[i].setText(String.valueOf(myMap.getKey())); Log.i("NOPE", "tvScore[i] is " + i);
+                    tvScore[i].setText(String.valueOf(myMap.getKey()));
                     tvScore[i].startAnimation(fadein);
                     i--;
                     uid = String.valueOf(myMap.getValue());
@@ -132,7 +130,7 @@ public class HighScores extends AppCompatActivity
                 //If the score exists, then get it from Firebase.
                 if (dataSnapshot.exists())
                 {
-                    tvEmail[k].setText(dataSnapshot.getValue(String.class)); Log.i("NOPE", "tvEmail[k] is " + k);
+                    tvEmail[k].setText(dataSnapshot.getValue(String.class));
                     tvEmail[k].startAnimation(bounce);
                     k--;
                     email = dataSnapshot.getValue(String.class);
@@ -162,7 +160,7 @@ public class HighScores extends AppCompatActivity
         Glide.with(this)
                 .applyDefaultRequestOptions(options) //Applies the above RequestOptions.
                 .load(pathRef)
-                .into(imgAvatar[j]); Log.i("NOPE", "imgAvatar[j] is " + j);
+                .into(imgAvatar[j]);
                 j--;
     }
 
