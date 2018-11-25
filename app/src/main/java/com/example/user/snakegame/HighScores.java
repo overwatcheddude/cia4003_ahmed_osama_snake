@@ -38,10 +38,16 @@ import java.util.TreeMap;
 
 public class HighScores extends AppCompatActivity
 {
-    //Firebase variables
+    //Get the current loggen in user from Firebase authentication.
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    //Gets the instance of Firebase storage.
     FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    //Gets the reference to firebase storage.
     StorageReference storageRef = storage.getReference();
+
+    //Get the instance and reference of the firebase database.
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     //Variables used in multiple methods.
@@ -76,32 +82,50 @@ public class HighScores extends AppCompatActivity
         databaseReference.child("Leaderboard").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Gets all scores from firebase.
+                //Gets all scores from the Leaderboard.
                 Map<String, String> map = (Map<String, String>) dataSnapshot.getValue();
+
+                //Convert from hashmap to string.
                 String uidAndScoreObjects = map.toString();
+
+                //Splits the objects by comma, and place them in a list.
                 List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(","));
 
-                //Create a map to store the UID and score.
+                //Create a tree map to store the UID and score in an organized way.
                 Map<Integer, String> uidAndScoreMap = new TreeMap<>();
 
                 //Goes through all the UIDs and scores.
                 for (int i = 0; i < map.size(); i++)
                 {
+                    //Gets the UID&Score object by index.
                     String uidAndScore = leaderboard.get(i);
+
+                    //Get the first 28 characters (UID)
                     String uid = uidAndScore.substring(1, 29);
+
+                    //Gets the characters after the UID.
                     String scoreField = uidAndScore.substring(29);
+
+                    //Removes all characters except for digits.
                     String score = scoreField.replaceAll("[^\\d]", "");
 
                     //Adds the UID and score and pair them together.
                     uidAndScoreMap.put(Integer.parseInt(score), uid);
                 }
 
+                //Foreach, Key is score, value is UID.
                 for (Map.Entry myMap  : uidAndScoreMap.entrySet())
                 {
-                    //Key is score, value is UID.
+                    //Displays a player's score to the user.
                     tvScore[i].setText(String.valueOf(myMap.getKey()));
+
+                    //The score will fade in.
                     tvScore[i].startAnimation(fadein);
+
+                    //Continue to the next index.
                     i--;
+
+                    //Gets the UID and call the setEmail method in-order to display the user's email.
                     uid = String.valueOf(myMap.getValue());
                     setEmail(uid);
                 }
@@ -116,10 +140,10 @@ public class HighScores extends AppCompatActivity
 
     private void setEmail(String uid)
     {
-        //Sets the path to get to the score node.
+        //Sets the path to get to the user's email node.
         String path = "/" + uid + "/Email";
 
-        //Read the player's score from Firebase.
+        //Read the player's email from Firebase realtime DB.
         final DatabaseReference NameScoreRef = FirebaseDatabase.getInstance().getReference(path);
 
         NameScoreRef.addValueEventListener(new ValueEventListener()
@@ -127,12 +151,19 @@ public class HighScores extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                //If the score exists, then get it from Firebase.
+                //If the email exists, then retrieve it.
                 if (dataSnapshot.exists())
                 {
+                    //Displays the player's email in the high scores list.
                     tvEmail[k].setText(dataSnapshot.getValue(String.class));
+
+                    //The email text will bounce when they appear.
                     tvEmail[k].startAnimation(bounce);
+
+                    //Move on to the next email.
                     k--;
+
+                    //Hold the email value, which will be used for setAvatar method.
                     email = dataSnapshot.getValue(String.class);
                     setAvatar(email);
                 }
@@ -161,7 +192,7 @@ public class HighScores extends AppCompatActivity
                 .applyDefaultRequestOptions(options) //Applies the above RequestOptions.
                 .load(pathRef)
                 .into(imgAvatar[j]);
-                j--;
+                j--; //Moves on to the next imageView.
     }
 
     public void BackToMenu(View v)

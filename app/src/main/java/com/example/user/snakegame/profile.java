@@ -29,9 +29,13 @@ public class profile extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        //Firebase data
+        //Gets the current logged in user using Firebase authentication.
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //Get instance of firebase storage.
         FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        //Gets the root reference of the firebase storage.
         StorageReference storageRef = storage.getReference();
 
         //Reads imageview.
@@ -41,19 +45,19 @@ public class profile extends AppCompatActivity
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         tvStatus.setText("Loading avatar, please wait.");
 
-        // Reference to an image file in Cloud Storage
+        //Reference to the uploaded image, which will be retrieved based on the user's email.
         StorageReference pathRef = storageRef.child("images/" + user.getEmail());
 
-        // Clears the cache, so Glide has to fetch the image from Firebase on every request.
+        //Clears the cache, so Glide has to fetch the image from Firebase on every request.
         RequestOptions options = new RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true);
 
-        // Download directly from StorageReference using Glide
+        //Download directly from StorageReference using Glide
         Glide.with(this)
                 .applyDefaultRequestOptions(options) //Applies the above RequestOptions.
-                .load(pathRef)
-                .listener(new RequestListener<Drawable>() {
+                .load(pathRef) //Loads the above path.
+                .listener(new RequestListener<Drawable>() { //Sets listener to see if this was an image uploaded or not.
                     @Override
                     public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
@@ -68,7 +72,7 @@ public class profile extends AppCompatActivity
                         return false;
                     }
                 })
-                .into(ivAvatar);
+                .into(ivAvatar); //Displays the image if found.
     }
 
     public void OnActivityClick(View v)

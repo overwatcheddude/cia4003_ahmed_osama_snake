@@ -28,13 +28,20 @@ import java.io.IOException;
 
 public class AvatarPreview extends AppCompatActivity
 {
+    //Holds the request code for the camera.
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private General general;
     private TextView tvStatus;
     private String setOption;
     private ImageView ivAvatar;
+
+    //Gets the current logged in user using Firebase authentication.
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    //Gets instance of Firebase storage.
     FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    //Gets root reference to Firebase storage.
     StorageReference storageRef = storage.getReference();
 
     @Override
@@ -51,23 +58,28 @@ public class AvatarPreview extends AppCompatActivity
 
     public void uploadImage(View v)
     {
+        //If image view is empty, then display error message.
         if (ivAvatar.getDrawable() == null)
         {
             tvStatus.setText("Please set an image before uploading!");
             return;
         }
+        //Set imageview options.
         ivAvatar.setDrawingCacheEnabled(true);
         ivAvatar.buildDrawingCache();
+
+        //Convert imageview to bitmap.
         Bitmap bitmap = ((BitmapDrawable) ivAvatar.getDrawable()).getBitmap();
 
+        //Converts bitmap of the image view to JPG.
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
-        // Create the file metadata
+        //Creates metadata for the file.
         StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/jpeg").build();
 
-        // Upload file and metadata to the path 'images/user_email'
+        //Uploads the image and its metadata to the path 'images/user_email'.
         UploadTask uploadTask = storageRef.child("images/"+ user.getEmail()).putBytes(data, metadata);
 
         // Listen for state changes, errors, and completion of the upload.

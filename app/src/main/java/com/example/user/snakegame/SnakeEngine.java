@@ -29,14 +29,11 @@ import com.google.firebase.database.ValueEventListener;
 
 class SnakeEngine extends SurfaceView implements Runnable
 {
-    //For debugging
-    private void myLog(String msg)
-    {
-        Log.i("", msg);
-    }
-
+    //Get the current logged in Firebase user.
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference databaseReference; //Used to add data to firebase.
+
+    //Holds the reference to our database.
+    private DatabaseReference databaseReference;
 
     Thread myThread = null; //A thread for looping the game.
 
@@ -63,8 +60,10 @@ class SnakeEngine extends SurfaceView implements Runnable
     final long FPS = 10; //Updates the game 10 times every second.
     final long MILLIS_PER_SECOND = 1000; //Represents 1 second.
 
-    //Get the user's name/email.
+    //Gets the user's UID.
     String uid = user.getUid();
+
+    //Gets the user's email.
     String email = user.getEmail();
 
     int score; //Used to hold the score of the player.
@@ -140,10 +139,10 @@ class SnakeEngine extends SurfaceView implements Runnable
 
     private void getFromDB()
     {
-        //Sets the path to get to the score node.
+        //Sets the path to get to the score node based on the user's UID.
         String path = "/" + uid + "/Score";
 
-        //Read the player's score from Firebase.
+        //Read the player's score from Firebase realtime DB.
         final DatabaseReference NameScoreRef = FirebaseDatabase.getInstance().getReference(path);
 
         NameScoreRef.addValueEventListener(new ValueEventListener()
@@ -151,14 +150,15 @@ class SnakeEngine extends SurfaceView implements Runnable
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                //If the score exists, then get it from Firebase.
+                //If the score exists, then get it from the database as an int.
                 if (dataSnapshot.exists())
                 {
+                    //By default, the score retrieved from the DB would be the player's highest score.
                     highScore = dataSnapshot.getValue(Integer.class);
                 }
                 else
                 {
-                    myLog("dataSnapshot does not exist.");
+                    Log.i("","dataSnapshot does not exist.");
                 }
             }
             @Override
@@ -170,11 +170,15 @@ class SnakeEngine extends SurfaceView implements Runnable
         });
     }
 
-    //This method is called twice in addToDB.
     private void setScore()
     {
+        //Add the player's score to the leaderboard in-order to compare it to other scores.
         databaseReference.child("Leaderboard").child(uid).child("Score").setValue(score);
+
+        //Email is saved so we can match the player's email with their score.
         databaseReference.child(uid).child("Email").setValue(email);
+
+        //Saves the player's score to the DB.
         databaseReference.child(uid).child("Score").setValue(score);
     }
 
@@ -183,7 +187,7 @@ class SnakeEngine extends SurfaceView implements Runnable
         //Get root reference
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        //Read the score before adding.
+        //Reads the current player's score from the DB.
         getFromDB();
 
         //If the user does not have a high score, then set new score.
@@ -191,14 +195,14 @@ class SnakeEngine extends SurfaceView implements Runnable
         {
             setScore();
         }
-        //If the player score is higher than the score in the database, then add it.
+        //If the player score is higher than the score in the database, then replace it.
         else if (score > highScore)
         {
             setScore();
         }
         else
         {
-            myLog("Score is not higher than high score.");
+            Log.i("","Score is not higher than high score.");
         }
     }
 
@@ -208,10 +212,10 @@ class SnakeEngine extends SurfaceView implements Runnable
         snakeXs[0] = NUM_BLOCKS_WIDE / 2;
         snakeYs[0] = numBlocksHigh / 2;
 
-        //Read the score from the database.
+        //Read the player's current score from the DB.
         getFromDB();
 
-        //If the score is not zero, then add the score to firebase.
+        //If the score is not zero, then add the score to firebase's realtime DB.
         if (score != 0)
         {
             addToDB();
