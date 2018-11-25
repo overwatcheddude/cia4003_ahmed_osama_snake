@@ -12,6 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity
 {
     @Override
@@ -40,6 +42,10 @@ public class MainActivity extends AppCompatActivity
                 gen.GoToActivity(HighScores.class); break;
             case R.id.btnProfile:
                 gen.GoToActivity(profile.class); break;
+            case R.id.btnLogOut:
+                FirebaseAuth.getInstance().signOut();
+                gen.GoToActivity(Login.class);
+                break;
             default: gen.DisplayMessage("Unknown button clicked.");
         }
     }

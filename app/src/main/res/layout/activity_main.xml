@@ -51,4 +51,11 @@
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="132dp" />
 
+    <Button
+        android:id="@+id/btnLogOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="OnActivityClick"
+        android:text="Log out" />
+
 </LinearLayout>
