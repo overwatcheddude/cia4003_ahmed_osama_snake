@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,6 +56,9 @@ public class HighScores extends AppCompatActivity
     TextView[] tvEmail = new TextView[5];
     ImageView[] imgAvatar = new ImageView[5];
 
+    //Animation gloal variables
+    Animation bounce;
+    Animation fadein;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -63,6 +68,10 @@ public class HighScores extends AppCompatActivity
 
         //Gives the 5 view variables the resouce IDs of the input items.
         assignResourcesToInputs();
+
+        //Loads animations
+        bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
+        fadein = AnimationUtils.loadAnimation(this, R.anim.fadein);
 
         databaseReference.child("Leaderboard").addValueEventListener(new ValueEventListener() {
             @Override
@@ -93,6 +102,7 @@ public class HighScores extends AppCompatActivity
                     Log.i("FINAL_LMAO",myMap.getKey() + " " + myMap.getValue());
 
                     tvScore[i].setText(String.valueOf(myMap.getKey())); Log.i("NOPE", "tvScore[i] is " + i);
+                    tvScore[i].startAnimation(fadein);
                     i--;
                     uid = String.valueOf(myMap.getValue());
                     setEmail(uid);
@@ -123,6 +133,7 @@ public class HighScores extends AppCompatActivity
                 if (dataSnapshot.exists())
                 {
                     tvEmail[k].setText(dataSnapshot.getValue(String.class)); Log.i("NOPE", "tvEmail[k] is " + k);
+                    tvEmail[k].startAnimation(bounce);
                     k--;
                     email = dataSnapshot.getValue(String.class);
                     setAvatar(email);
