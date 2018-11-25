@@ -8,6 +8,9 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -16,11 +19,19 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Animated the snake logo
+        Animation leftoright = AnimationUtils.loadAnimation(this, R.anim.lefttoright);
+        ImageView imgSnake = findViewById(R.id.imgSnake);
+        imgSnake.startAnimation(leftoright);
     }
 
     public void OnActivityClick(View v)
     {
+        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
+
         General gen = new General(getApplicationContext());
+        findViewById(v.getId()).startAnimation(rotate);
         switch (v.getId())
         {
             case R.id.btnStartGame:
