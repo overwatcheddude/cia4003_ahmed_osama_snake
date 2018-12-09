@@ -31,6 +31,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,15 +87,17 @@ public class HighScores extends AppCompatActivity
                 Map<String, String> map = (Map<String, String>) dataSnapshot.getValue();
 
                 //Convert from hashmap to string.
-                String uidAndScoreObjects = map.toString();
+                String uidAndScoreObjects = map.toString(); System.out.println("uidAndScoreObjects is " + uidAndScoreObjects);
 
                 //Splits the objects by comma, and place them in a list.
-                List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(","));
+                List<String> leaderboard = Arrays.asList(uidAndScoreObjects.split(",")); System.out.println("leaderboard is " + leaderboard);
 
-                //Create a tree map to store the UID and score in an organized way.
-                Map<Integer, String> uidAndScoreMap = new TreeMap<>();
+                //Create a tree map to store the UID and score in an organized way (desc).
+                TreeMap<Integer, String> uidAndScoreMap = new TreeMap(Collections.reverseOrder()); System.out.println("uidAndScoreMap created");
+                uidAndScoreMap.putAll(uidAndScoreMap);
 
                 //Goes through all the UIDs and scores.
+                System.out.println("map.size() is " + map.size());
                 for (int i = 0; i < map.size(); i++)
                 {
                     //Gets the UID&Score object by index.
@@ -110,12 +113,20 @@ public class HighScores extends AppCompatActivity
                     String score = scoreField.replaceAll("[^\\d]", "");
 
                     //Adds the UID and score and pair them together.
-                    uidAndScoreMap.put(Integer.parseInt(score), uid);
+                    uidAndScoreMap.put(Integer.parseInt(score), uid); System.out.println("uidAndScoreMap is " + uidAndScoreMap);
                 }
 
+                //Gets only the first 5 players
+                TreeMap<Integer, String> myNewMap = uidAndScoreMap.entrySet().stream()
+                        .limit(5)
+                        .collect(TreeMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
+
                 //Foreach, Key is score, value is UID.
-                for (Map.Entry myMap  : uidAndScoreMap.entrySet())
+                for (Map.Entry myMap  : myNewMap.entrySet())
                 {
+                    System.out.println("i is " + i);
+                    System.out.println("myMap is " + myMap);
+                    System.out.println("myNewMap.entrySet() is " + myNewMap.entrySet());
                     //Displays a player's score to the user.
                     tvScore[i].setText(String.valueOf(myMap.getKey()));
 
@@ -126,8 +137,8 @@ public class HighScores extends AppCompatActivity
                     i--;
 
                     //Gets the UID and call the setEmail method in-order to display the user's email.
-                    uid = String.valueOf(myMap.getValue());
-                    setEmail(uid);
+                    uid = String.valueOf(myMap.getValue()); System.out.println("uid is " + uid);
+                    setEmail(uid); System.out.println("setEmail called with uid: " + uid);
                 }
             }
 
